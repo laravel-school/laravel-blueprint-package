@@ -1,0 +1,22 @@
+models:
+  Post:
+    title: string
+    description: longtext
+    user_id: id
+    publised: boolean
+    published_at: nullable timestamp
+
+controllers:
+  Post:
+    index:
+      query: all
+      render: post.index with:posts
+    create:
+      render: post.create
+    store:
+      validate: title, description
+      save: post
+      flash: post.title
+      redirect: post.index  
+    show:
+      render: post.show with:post
