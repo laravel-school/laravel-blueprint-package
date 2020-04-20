@@ -1,80 +1,138 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+The [BluePrint](https://github.com/laravel-shift/blueprint) is a package for Laravel to develop component rapidly. The meaning of "Rapid" even you can develop the project without writing code. Incredible, right? This package is maintained by [Laravel Shift](https://github.com/laravel-shift). 
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+According to the docs-
+> Blueprint is an open-source tool for rapidly generating multiple Laravel components from a single, human readable definition.
 
-## About Laravel
+Let's dig into it.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Requirements
+- Need to have [Composer](https://getcomposer.org/)
+- Laravel Project. 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## How to Install?
+Run the following command-
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+composer require --dev laravel-shift/blueprint
+```
 
-## Learning Laravel
+## Blueprint commands
+Once you installed, you will multiple commands in `php artisan` for blueprint. 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+For example-
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+blueprint
+  blueprint:build      Build components from a Blueprint draft
+  blueprint:erase      Erase components created from last Blueprint build
+  blueprint:trace      Create definitions for existing models to reference in new drafts
+```
 
-## Laravel Sponsors
+First, let's create a `draft.yml` file in our root directory of the project. 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## My Requirements
+Imagine, I want to build a blog where I need to have-
+- A Post model
+    - `title` that should be a string.
+    - `description` that should be a long text. 
+    - `user_id` that should be a user id.
+    - `published_at` that should be a boolean.
+- A PostController
+    - index()
+    - show()
+    - create()
+    - store()
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
+## Defining expected components
+Now, define the required components in `draft.yaml` file like so-
 
-## Contributing
+```yaml
+models:
+  Post:
+    title: string
+    description: longtext
+    user_id: id
+    publised: boolean
+    published_at: nullable timestamp
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Controllers:
+  Post:
+    index:
+      query: all
+      render: post.index with:posts
+    create:
+      render: post.create
+    store:
+      validate: title, description
+      save: post
+      redirect: post.index  
+    show:
+      render: post.show with:post
+```
 
-## Code of Conduct
+So, you can define your requirement as a human-readable way in the `ymal` file. Isn't that enough readable? 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Now, run this command-
 
-## Security Vulnerabilities
+```
+php artisan blueprint:build
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+It will generate the following files-
 
-## License
+```
+Created:
+- database/migrations/2020_04_20_101727_create_posts_table.php
+- app/Post.php
+- database/factories/PostFactory.php
+- app/Http/Controllers/PostController.php
+- app/Http/Requests/PostStoreRequest.php
+- resources/views/post/index.blade.php
+- resources/views/post/show.blade.php
+- tests/Feature/Http/Controllers/PostControllerTest.php
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# laravel-blueprint-package
+It's basically created as we described in our `draft.yaml` file. Cool, isn't so?
+
+Even, it created relationships in models. For example, our case, a post basically belongs to a user. There should a relationship between `user` and `posts`. Here is our [Post.php model](https://github.com/laravel-school/laravel-blueprint-package/blob/master/app/Post.php). Even it's created test for us [PostControllerTest.php](https://github.com/laravel-school/laravel-blueprint-package/blob/master/tests/Feature/Http/Controllers/PostControllerTest.php). Cool, right?
+
+In our `web.php` file, there is a resource for `post`.
+
+Even it creates some dummy view page in `resources/views/post` folder. Now you can adjust based on your expectation. 
+
+It's cool enough,  right? 
+
+Surely it is, however, still you have to adjust something in the code. For example, you want to use __flash__ message once the data store. 
+
+in your `draft.yaml` file-
+```
+store:
+      validate: title, description
+      save: post
+      flash: post.title
+      redirect: post.index  
+````
+
+Now, if we look into the `store()` method in the controller, we can see the flash message has defined as tile only. Obviously we need to update like "Post has been stored". We need to do it manually. 
+
+```
+public function store(PostStoreRequest $request)
+    {
+        $post = Post::create($request->all());
+
+        $request->session()->flash('post.title', $post->title);
+
+        return redirect()->route('post.index');
+    }
+```
+
+The main purpose of this package to make your development faster, even beyond our thinking. And surely, they did it. A big clap for the development team. 
+
+And of course, there are lot more commands available. Check it out in the official repo:
+https://github.com/laravel-shift/blueprint
+
+**Alert**: Just want to remind you that, if you don't have knowledge of basic on Laravel, I strongly discourage you not to use this package because it may destroy your learning power. To use this package, you should be at least an intermediate level of developer. 
+
+Thank you. 
+
+This article has been posted at: http://laravel-school.com/posts/learning-laravel-blueprint-a-rapid-component-development-package-67
