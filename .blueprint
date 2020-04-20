@@ -1,0 +1,14 @@
+created:
+    - database/migrations/2020_04_20_102621_create_posts_table.php
+    - app/Post.php
+    - database/factories/PostFactory.php
+    - app/Http/Controllers/PostController.php
+    - app/Http/Requests/PostStoreRequest.php
+    - resources/views/post/index.blade.php
+    - resources/views/post/create.blade.php
+    - resources/views/post/show.blade.php
+    - tests/Feature/Http/Controllers/PostControllerTest.php
+updated:
+    - routes/web.php
+models:
+    Post: { title: string, description: longtext, user_id: id, publised: boolean, published_at: 'nullable timestamp' }
